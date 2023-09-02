@@ -6,8 +6,8 @@ on:
       - master 
 env:
   REGISTRY_NAME: ${{ vars.REGISTRY_NAME }}
-  WEB_SERVICE: ${{ vars.WEB_SERVICE }}
-  API_SERVICE: ${{ vars.API_SERVICE }}
+  WEB_SERVICE: blog
+  API_SERVICE: api
   RESOURCE_GROUP: ${{ vars.RESOURCE_GROUP }}
 jobs:
   build_and_push:
