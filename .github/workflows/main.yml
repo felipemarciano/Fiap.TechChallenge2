@@ -37,19 +37,17 @@ jobs:
         docker build -t ${{ env.REGISTRY_NAME }}/${{ env.API_SERVICE }}:${{ github.sha }} --file Dockerfile.api .
         docker push ${{ env.REGISTRY_NAME }}/${{ env.API_SERVICE }}:${{ github.sha }}
         
-    - name: Azure CLI Action
-      uses: Azure/cli@v1.0.8
+    - name: Deploy to Azure Container Instance API
+      uses: Azure/aci-deploy@v1
       with:
-        inlineScript: 
-          az container create \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --name ${{ env.API_SERVICE }} \
-            --image ${{ env.REGISTRY_NAME }}/${{ env.API_SERVICE }}:${{ github.sha }} \
-            --registry-username ${{ secrets.ACR_USERNAME }} \
-            --registry-password ${{ secrets.ACR_PASSWORD }} \
-            --dns-name-label ${{ env.API_SERVICE }}-fiap \
-            --environment-variables 'CONNECTION_STRING=${{ env.CONNECTION_STRING }}' 'BLOG_CONNECTION_STRING=${{ env.BLOG_CONNECTION_STRING }}' \
-            --location eastus2
+        resource-group: ${{ env.RESOURCE_GROUP }}  
+        name: ${{ env.API_SERVICE }} 
+        image: ${{ env.REGISTRY_NAME }}/${{ env.API_SERVICE }}:${{ github.sha }} 
+        registry-username: ${{ secrets.ACR_USERNAME }} 
+        registry-password: ${{ secrets.ACR_PASSWORD }} 
+        dns-name-label: ${{ env.API_SERVICE }}-fiap 
+        environment-variables: CONNECTION_STRING=${{ ${{ env.CONNECTION_STRING }} }} BLOG_CONNECTION_STRING=${{ ${{ env.BLOG_CONNECTION_STRING }} }}
+        location: eastus2
           
     - name: Deploy to Azure Container Instance BLOB
       uses: Azure/aci-deploy@v1
