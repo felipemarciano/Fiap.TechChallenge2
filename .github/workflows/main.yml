@@ -23,7 +23,7 @@ jobs:
       uses: benday-inc/set-property-value-in-appsettings@v1.4
       with:
         # Path to the json file to edit (appsettings.json)
-        pathToSettingsFile: 'Blob/appsettings.json'
+        pathToSettingsFile: './Blob/appsettings.json'
         JwtSettings.Api: ${{ env.API_SERVICE }}-fiap.eastus2.azurecontainer.io
         AzureBlobStorage.BlobContainerName: Blob
         ConnectionStrings.StorageConnectionString: ${{ secrets.StorageConnectionString }}
@@ -35,7 +35,7 @@ jobs:
       uses: benday-inc/set-property-value-in-appsettings@v1.4
       with:
         # Path to the json file to edit (appsettings.json)
-        pathToSettingsFile: 'Api/appsettings.json'
+        pathToSettingsFile: './Api/appsettings.json'
         ConnectionStrings.DefaultConnection: ${{ secrets.CONNECTION_STRING }}
         ConnectionStrings.BlogConnection: ${{ secrets.BLOG_CONNECTION_STRING }}
         
