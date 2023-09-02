@@ -9,8 +9,6 @@ env:
   WEB_SERVICE: blog
   API_SERVICE: api
   RESOURCE_GROUP: ${{ vars.RESOURCE_GROUP }}
-  CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
-  BLOG_CONNECTION_STRING: ${{ secrets.BLOG_CONNECTION_STRING }}
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
@@ -19,6 +17,42 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Set property string value in a json file
+      uses: benday-inc/set-property-value-in-appsettings@v1.4
+      with:
+        # Path to the json file to edit (appsettings.json)
+        pathToSettingsFile: '${{ github.workspace }}/Blog/appsettings.json'
+        keyname1: JwtSettings
+        keyname2: Api
+        valueToSet: ${{ env.API_SERVICE }}-fiap.eastus2.azurecontainer.io
+
+    - name: Set property string value in a json file
+      uses: benday-inc/set-property-value-in-appsettings@v1.4
+      with:
+        # Path to the json file to edit (appsettings.json)
+        pathToSettingsFile: '${{ github.workspace }}/Blog/appsettings.json'
+        keyname1: AzureBlobStorage
+        keyname2: StorageConnectionString
+        valueToSet: ${{ secrets.StorageConnectionString }}
+
+    - name: Set property string value in a json file
+      uses: benday-inc/set-property-value-in-appsettings@v1.4
+      with:
+        # Path to the json file to edit (appsettings.json)
+        pathToSettingsFile: '${{ github.workspace }}/Api/appsettings.json'
+        keyname1: ConnectionStrings
+        keyname2: DefaultConnection
+        valueToSet: ${{ secrets.CONNECTION_STRING }}
+
+    - name: Set property string value in a json file
+      uses: benday-inc/set-property-value-in-appsettings@v1.4
+      with:
+        # Path to the json file to edit (appsettings.json)
+        pathToSettingsFile: '${{ github.workspace }}/Api/appsettings.json'
+        keyname1: ConnectionStrings
+        keyname2: BlogConnection
+        valueToSet: ${{ secrets.BLOG_CONNECTION_STRING }}
+        
     - name: Azure Login
       uses: Azure/login@v1
       with:
@@ -46,10 +80,9 @@ jobs:
         registry-username: ${{ secrets.ACR_USERNAME }} 
         registry-password: ${{ secrets.ACR_PASSWORD }} 
         dns-name-label: ${{ env.API_SERVICE }}-fiap 
-        environment-variables: ${{ secrets.CONNECTION_STRING }}
         location: eastus2
           
-    - name: Deploy to Azure Container Instance BLOB
+    - name: Deploy to Azure Container Instance BLOG
       uses: Azure/aci-deploy@v1
       with:
           resource-group: ${{ env.RESOURCE_GROUP }}
