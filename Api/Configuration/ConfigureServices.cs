@@ -15,12 +15,13 @@ namespace Api.Configuration
         {
 
             var defaultConnectionString = configuration.GetConnectionString("DefaultConnection");
-            defaultConnectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? defaultConnectionString;
 
-            var blogConnectionString = configuration.GetConnectionString("BlogConnection");
-            blogConnectionString = Environment.GetEnvironmentVariable("BLOG_CONNECTION_STRING") ?? blogConnectionString;
+            if (Environment.GetEnvironmentVariable("HOST") != null)
+            {
+                defaultConnectionString = $"Host=Environment.GetEnvironmentVariable(\"Host\"); Database=Environment.GetEnvironmentVariable(\"Database\") Username=Environment.GetEnvironmentVariable(\"Username\"); Password=Environment.GetEnvironmentVariable(\"Password\")";
+            }
 
-            Infrastructure.Dependencies.ConfigureServices(configuration, services, blogConnectionString, defaultConnectionString);
+            Infrastructure.Dependencies.ConfigureServices(configuration, services, defaultConnectionString, defaultConnectionString);
 
             // Add Identity
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()

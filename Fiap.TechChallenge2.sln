@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{14F05CD2
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A33A8243-49CA-4E78-99F7-FF8A9C8FC716}"
 	ProjectSection(SolutionItems) = preProject
+		Dockerfile.api = Dockerfile.api
+		Dockerfile.blog = Dockerfile.blog
 		readme.md = readme.md
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
