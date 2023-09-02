@@ -57,5 +57,5 @@ jobs:
         registry-username: ${{ secrets.ACR_USERNAME }} 
         registry-password: ${{ secrets.ACR_PASSWORD }} 
         dns-name-label: ${{ env.API_SERVICE }}-fiap 
-        environment-variables: \"CONNECTION_STRING=${{ env.CONNECTION_STRING }}\" \"BLOG_CONNECTION_STRING=${{ env.BLOG_CONNECTION_STRING }}\"
+        environment-variables: \'CONNECTION_STRING=${{ env.CONNECTION_STRING }}\' \'BLOG_CONNECTION_STRING=${{ env.BLOG_CONNECTION_STRING }}\'
         location: eastus2
