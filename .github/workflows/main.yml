@@ -18,26 +18,40 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set property string value in a json file
-      # You may pin to the exact commit or the version.
-      # uses: benday-inc/set-property-value-in-appsettings@3858a05324c90624828893077c6b96935d3e7d13
       uses: benday-inc/set-property-value-in-appsettings@v1.4
       with:
         # Path to the json file to edit (appsettings.json)
-        pathToSettingsFile: './Blob/appsettings.json'
-        JwtSettings.Api: ${{ env.API_SERVICE }}-fiap.eastus2.azurecontainer.io
-        AzureBlobStorage.BlobContainerName: Blob
-        ConnectionStrings.StorageConnectionString: ${{ secrets.StorageConnectionString }}
-
+        pathToSettingsFile: '${{ github.workspace }}/Blob/appsettings.json'
+        keyname1: JwtSettings
+        keyname2: Api
+        valueToSet: ${{ env.API_SERVICE }}-fiap.eastus2.azurecontainer.io
 
     - name: Set property string value in a json file
-      # You may pin to the exact commit or the version.
-      # uses: benday-inc/set-property-value-in-appsettings@3858a05324c90624828893077c6b96935d3e7d13
       uses: benday-inc/set-property-value-in-appsettings@v1.4
       with:
         # Path to the json file to edit (appsettings.json)
-        pathToSettingsFile: './Api/appsettings.json'
-        ConnectionStrings.DefaultConnection: ${{ secrets.CONNECTION_STRING }}
-        ConnectionStrings.BlogConnection: ${{ secrets.BLOG_CONNECTION_STRING }}
+        pathToSettingsFile: '${{ github.workspace }}/Blob/appsettings.json'
+        keyname1: AzureBlobStorage
+        keyname2: StorageConnectionString
+        valueToSet: ${{ secrets.StorageConnectionString }}
+
+    - name: Set property string value in a json file
+      uses: benday-inc/set-property-value-in-appsettings@v1.4
+      with:
+        # Path to the json file to edit (appsettings.json)
+        pathToSettingsFile: '${{ github.workspace }}/Api/appsettings.json'
+        keyname1: ConnectionStrings
+        keyname2: DefaultConnection
+        valueToSet: ${{ secrets.CONNECTION_STRING }}
+
+    - name: Set property string value in a json file
+      uses: benday-inc/set-property-value-in-appsettings@v1.4
+      with:
+        # Path to the json file to edit (appsettings.json)
+        pathToSettingsFile: '${{ github.workspace }}/Api/appsettings.json'
+        keyname1: ConnectionStrings
+        keyname2: BlogConnection
+        valueToSet: ${{ secrets.BLOG_CONNECTION_STRING }}
         
     - name: Azure Login
       uses: Azure/login@v1
