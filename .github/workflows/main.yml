@@ -38,12 +38,13 @@ jobs:
     - name: Deploy to Azure Container Instance BLOB
       uses: Azure/aci-deploy@v1
       with:
-          resource-group: ${{ env.RESOURCE_GROUP }} \  
-          name: ${{ env.WEB_SERVICE }} \
-          image: ${{ env.REGISTRY_NAME }}/${{ env.WEB_SERVICE }}:${{ github.sha }} \
-          registry-username: ${{ secrets.ACR_USERNAME }} \
-          registry-password: ${{ secrets.ACR_PASSWORD }} \
-          dns-name-label: ${{ env.WEB_SERVICE }}-dns \
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          name: ${{ env.WEB_SERVICE }} 
+          image: ${{ env.REGISTRY_NAME }}/${{ env.WEB_SERVICE }}:${{ github.sha }} 
+          registry-username: ${{ secrets.ACR_USERNAME }} 
+          registry-password: ${{ secrets.ACR_PASSWORD }} 
+          dns-name-label: ${{ env.WEB_SERVICE }}-fiap
+          location: eastus2
                     
     - name: Deploy to Azure Container Instance API
       uses: Azure/aci-deploy@v1
@@ -53,5 +54,6 @@ jobs:
         image: ${{ env.REGISTRY_NAME }}/${{ env.API_SERVICE }}:${{ github.sha }} 
         registry-username: ${{ secrets.ACR_USERNAME }} 
         registry-password: ${{ secrets.ACR_PASSWORD }} 
-        dns-name-label: ${{ env.API_SERVICE }}-dns 
+        dns-name-label: ${{ env.API_SERVICE }}-fiap 
         environment-variables: CONNECTION_STRING=${{ secrets.CONNECTION_STRING }} BLOG_CONNECTION_STRING=${{ secrets.BLOG_CONNECTION_STRING }}
+        location: eastus2
