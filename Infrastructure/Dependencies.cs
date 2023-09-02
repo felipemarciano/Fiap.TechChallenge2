@@ -9,7 +9,7 @@ namespace Infrastructure
 {
     public static class Dependencies
     {
-        public static void ConfigureServices(IConfiguration configuration, IServiceCollection services, string blogConnectionString, string defaultConnectionString)
+        public static void ConfigureServices(IConfiguration configuration, IServiceCollection services)
         {
             var dmpConnectionString = configuration.GetConnectionString("BlogConnection") ?? throw new InvalidOperationException("Connection string 'BlogConnection' not found.");
             services.AddDbContext<BlogContext>(c =>

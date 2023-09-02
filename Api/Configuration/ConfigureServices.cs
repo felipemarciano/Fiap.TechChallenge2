@@ -14,14 +14,7 @@ namespace Api.Configuration
             IConfiguration configuration)
         {
 
-            var defaultConnectionString = configuration.GetConnectionString("DefaultConnection");
-
-            if (Environment.GetEnvironmentVariable("HOST") != null)
-            {
-                defaultConnectionString = $"Host={Environment.GetEnvironmentVariable("Host")}; Database={Environment.GetEnvironmentVariable("Database")} Username={Environment.GetEnvironmentVariable("Username")}; Password={Environment.GetEnvironmentVariable("Password")}";
-            }
-
-            Infrastructure.Dependencies.ConfigureServices(configuration, services, defaultConnectionString, defaultConnectionString);
+            Infrastructure.Dependencies.ConfigureServices(configuration, services);
 
             // Add Identity
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
