@@ -1,0 +1,61 @@
+name: Build and Deploy to Azure Container Instance
+
+on:
+  push:
+    branches:
+      - master 
+env:
+  REGISTRY_NAME: ${{ vars.REGISTRY_NAME }}
+  WEB_SERVICE: blog
+  API_SERVICE: api
+  RESOURCE_GROUP: ${{ vars.RESOURCE_GROUP }}
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Azure Login
+      uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Log in to ACR
+      run: echo "${{ secrets.ACR_PASSWORD }}" | docker login ${{ env.REGISTRY_NAME }} -u ${{ secrets.ACR_USERNAME }} --password-stdin
+
+    - name: Build and push web service
+      run: |
+        docker build -t ${{ env.REGISTRY_NAME }}/${{ env.WEB_SERVICE }}:${{ github.sha }} --file Dockerfile.blog .
+        docker push ${{ env.REGISTRY_NAME }}/${{ env.WEB_SERVICE }}:${{ github.sha }}
+
+    - name: Build and push api service
+      run: |
+        docker build -t ${{ env.REGISTRY_NAME }}/${{ env.API_SERVICE }}:${{ github.sha }} --file Dockerfile.api .
+        docker push ${{ env.REGISTRY_NAME }}/${{ env.API_SERVICE }}:${{ github.sha }}
+        
+    - name: Deploy to Azure Container Instance
+      run: |
+        # Deploy web service
+        az container create \
+          --resource-group ${{ env.RESOURCE_GROUP }} \  
+          --name ${{ env.WEB_SERVICE }} \
+          --image ${{ env.REGISTRY_NAME }}/${{ env.WEB_SERVICE }}:${{ github.sha }} \
+          --registry-username ${{ secrets.ACR_USERNAME }} \
+          --registry-password ${{ secrets.ACR_PASSWORD }} \
+          --dns-name-label ${{ env.WEB_SERVICE }}-dns \
+          --query "{FQDN:ipAddress.fqdn}" \
+          --output table
+
+        # Deploy api service
+        az container create \
+          --resource-group ${{ env.RESOURCE_GROUP }} \  
+          --name ${{ env.API_SERVICE }} \
+          --image ${{ env.REGISTRY_NAME }}/${{ env.API_SERVICE }}:${{ github.sha }} \
+          --registry-username ${{ secrets.ACR_USERNAME }} \
+          --registry-password ${{ secrets.ACR_PASSWORD }} \
+          --dns-name-label ${{ env.API_SERVICE }}-dns \
+          --query "{FQDN:ipAddress.fqdn}" \
+          --output table \
+          --environment-variables CONNECTION_STRING=${{ secrets.CONNECTION_STRING }} BLOG_CONNECTION_STRING=${{ secrets.BLOG_CONNECTION_STRING }}
