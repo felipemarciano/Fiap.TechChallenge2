@@ -14,7 +14,13 @@ namespace Api.Configuration
             IConfiguration configuration)
         {
 
-            Infrastructure.Dependencies.ConfigureServices(configuration, services);
+            var defaultConnectionString = configuration.GetConnectionString("DefaultConnection");
+            defaultConnectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? defaultConnectionString;
+
+            var blogConnectionString = configuration.GetConnectionString("BlogConnection");
+            blogConnectionString = Environment.GetEnvironmentVariable("BLOG_CONNECTION_STRING") ?? blogConnectionString;
+
+            Infrastructure.Dependencies.ConfigureServices(configuration, services, blogConnectionString, defaultConnectionString);
 
             // Add Identity
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()

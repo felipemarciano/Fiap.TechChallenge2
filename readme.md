@@ -1,26 +1,40 @@
-# Publicar
+# Deploy
 
 ## Azure ARM
 	az login
 	az group create --name rg-techchallenge2-dev --location eastus2
-	az group deployment create --name Techchallenge2Deployment --resource-group rg-techchallenge2-dev --template-file ./template.json --parameters storageAccountName=sttechchallenge2dev sqlServerName=sqldb-techchallenge2-dev sqlDatabaseName=dbTechChallenge2 webAppName=app-techchallenge2 apiAppName=app-techchallenge2
+	az deployment group create --resource-group rg-techchallenge2-dev --template-file ./template.json --parameters storageAccountName=sttechchallenge2dev containerRegistryName=crtechchalleng2dev postgresServerName=psqltechchalleng2dev postgresAdminUsername=systemadmin postgresAdminPassword=root@1234
 
-## Configuração AzureSql
-	- https://learn.microsoft.com/en-us/azure/azure-sql/database/network-access-controls-overview?view=azuresql#allow-azure-services
+### Create RBAC
+	az ad sp create-for-rbac --name "TechChallenge2Dev" --role contributor --scopes /subscriptions/00000-0000-0000-000000000/resourceGroups/rg-techchallenge2-dev/providers/Microsoft.ContainerRegistry/registries/crtechchalleng2dev --sdk-auth
 
-## Metodo Usado de publicação
-	- Download do publish profile e realizado publish via visual studio
+### Get Json RBAC and add github secrets
+	ACR_CREDENTIALS
+
+### Get Container Registry Password 	
+	az acr credential show --name crtechchalleng2dev --query "passwords[0].value" --output tsv
+
+### Add Password in github secrets
+	ACR_PASSWORD
+
+### Add UserName in github secrets
+	ACR_USERNAME=crtechchalleng2dev
+
+### Add Registry Name in github variables
+	REGISTRY_NAME=crtechchalleng2dev.azurecr.io
+
+### Add Resource Group in github variables
+	RESOURCE_GROUP=rg-techchallenge2-dev
+
+### Postgres Flexible Server, create database and copy connectionstring
+### Add connectionstring in github secrets
+	CONNECTION_STRING
+	BLOG_CONNECTION_STRING
 
 ## StorageAccount
 	### Alterar AzureBlobStorage.StorageConnectionString:
 		az storage account show-connection-string --name sttechchallenge2dev --resource-group rg-techchallenge2-dev --output tsv
 	### Criar um container e alterar no appsettings AzureBlobStorage.BlobContainerName do projeto Blog.Web 
-
-# Editar Projeto
-
-## Criar Migrations
-	dotnet ef migrations add {Name} -c AppIdentityDbContext --project .\Infrastructure\Infrastructure.csproj --startup-project .\Api\Api.csproj --output-dir .\Identity\Migrations
-	dotnet ef migrations add {Name} -c BlogContext --project .\Infrastructure\Infrastructure.csproj --startup-project .\Api\Api.csproj --output-dir .\Data\Migrations\BlogDb
 
 # Referências
 

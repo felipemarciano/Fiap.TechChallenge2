@@ -10,6 +10,9 @@ namespace Infrastructure.Data
             {
                 blogContext.Database.Migrate();
             }
+
+
+
         }
     }
 }
