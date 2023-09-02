@@ -3,7 +3,7 @@ name: Build and Deploy to Azure Container Instance
 on:
   push:
     branches:
-      - main  # adjust this to your branch name
+      - master 
 env:
   REGISTRY_NAME: ${{ vars.REGISTRY_NAME }}
   WEB_SERVICE: ${{ vars.WEB_SERVICE }}
